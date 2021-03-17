@@ -1,0 +1,26 @@
+{
+  "name": "qa-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emmaknor/qa-db.git"
+  },
+  "author": "Emma Knor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emmaknor/qa-db/issues"
+  },
+  "homepage": "https://github.com/emmaknor/qa-db#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "postgres": "^1.0.2"
+  }
+}
