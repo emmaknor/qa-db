@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS questions (
   date_written TIMESTAMP,
   asker_name VARCHAR(50),
   asker_email VARCHAR(75),
-  reported INTEGER,
+  reported BOOLEAN,
   helpful INTEGER,
   PRIMARY KEY(id)
  );
@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS questions (
   date_written TIMESTAMP,
   answerer_name VARCHAR(50),
   answerer_email VARCHAR(75),
-  helpfulness INTEGER,
-  reported INTEGER,
+  reported BOOLEAN,
+  helpful INTEGER,
   PRIMARY KEY(id),
   FOREIGN KEY(question_id)
     REFERENCES questions(id)
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS questions (
  CREATE TABLE IF NOT EXISTS photos (
   id BIGSERIAL,
   answer_id INTEGER,
-  url VARCHAR(100),
+  url VARCHAR(200),
   PRIMARY KEY(id),
-  FOREIGN KEY(answer_id),
+  FOREIGN KEY(answer_id)
     REFERENCES answers(id)
  );

@@ -1,7 +1,7 @@
 const {Client} = require('pg')
 
 const client = new Client ({
-  user: 'root',
+  user: 'emma',
   host: 'localhost',
   database: 'qa',
   password: 'password',
@@ -12,12 +12,12 @@ client.connect()
 .then(() => console.log('connected to Postgres!'))
 .catch(e => console.error(e));
 
-const getQuestions = (req, res) => {
+const getQuestions = (cb) => {
   client.query('SELECT * FROM questions', (err, results) => {
-    if (error) {
-      console.error(error);
+    if (err) {
+      cb(err, null);
     } else {
-      res.status(200).send(results);
+      cb(null, results);
     }
   })
 }
@@ -35,7 +35,7 @@ const addQuestion = (req, res) => {
 
 const updateQHelpfulness = (req, res) => {
   const { question_id, helpfulness } = req.params.body;
-  client.query(`UPDATE qa SET helpfulness = ${question_id} WHERE id = ${id}`, [helpfulness], (err, results) => {
+  client.query(`UPDATE qa SET helpfulness = ${helpfulness} WHERE id = ${id}`, [helpfulness], (err, results) => {
     if (err) {
       console.log(err);
     } else {

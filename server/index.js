@@ -4,14 +4,25 @@ const queries = require('../database/queries.js');
 const app = express();
 const cors = require('cors');
 
+// set up router
+const router = require('./routes.js');
+
 // app.use for middleware
 app.use(express.json());
 app.use(cors());
 
-// initial test route
-app.get('/', (req, res) => {
-  res.send('hi from the server!');
+// get questions route
+app.get('/questions', (req, res) => {
+  queries.getQuestions((err, questions) => {
+    if (err) {
+      console.error(err);
+    } else {
+      res.status(200).send(questions);
+    }
+  })
 });
+
+
 
 // port where server listens
 const PORT = 5000;
