@@ -1,7 +1,9 @@
+## node modules
 node_modules/
 .env
 coverage
 build/
+## csv files
 answers_photos.csv
 answers.csv
 questions.csv

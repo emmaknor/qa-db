@@ -18,49 +18,95 @@ const getQuestions = (id, cb) => {
     if (err) {
       cb(err, null);
     } else {
-      console.log('ANSWERS: ', results.rows);
       cb(null, results.rows);
     }
   })
 }
 
 const getAnswers = (id, cb) => {
-  client.query('SELECT * FROM answers WHERE question_id = $1 ORDER BY helpful DESC', [id], (err, results) => {
+  client.query('SELECT * FROM answers a LEFT OUTER JOIN photos p ON a.answer_id = p.answerId WHERE a.questionId = $1 ORDER BY answer_helpful DESC', [id], (err, results) => {
     if (err) {
       cb(err, null);
     } else {
-      console.log(results.rows);
       cb(null, results.rows);
     }
   })
 }
 
-const addQuestion = (req, res) => {
-  const { body, name, email, product_id } = req.body;
-  client.query('INSERT INTO questions (body, name, email, product_id)', [body, name, email, product_id], (err, results) => {
+const markQuestionHelpful = (id, cb) => {
+  client.query(`UPDATE questions SET question_helpful = question_helpful + 1 WHERE question_id = $1`, [id], (err, results) => {
     if (err) {
-      console.error(err);
+      cb(err, null);
     } else {
-      res.status(201).send(results);
+      cb(null, 'Updated question helpfulness');
     }
   })
 }
 
-const updateQHelpfulness = (req, res) => {
-  const { question_id, helpfulness } = req.params.body;
-  client.query(`UPDATE qa SET helpfulness = ${helpfulness} WHERE id = ${id}`, [helpfulness], (err, results) => {
+const markAnswerHelpful = (id, cb) => {
+  client.query(`UPDATE answers SET answer_helpful = answer_helpful + 1 WHERE answer_id = $1`, [id], (err, results) => {
     if (err) {
-      console.log(err);
+      cb(err, null);
     } else {
-      res.status(200).send(results);
+      cb(null, 'Updated answer helpfulness');
     }
   })
 }
+
+const reportAnswer = (id, cb) => {
+  client.query(`UPDATE answers SET answer_reported = true WHERE answer_id = $1`, [id], (err, results) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      cb(null, 'Reported answer');
+    }
+  })
+}
+
+const addQuestion = (data, cb) => {
+  const { body, name, email, product_id } = data;
+  client.query('SELECT count(*) FROM questions', (err, count) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      let newCount = Number(count.rows[0].count) + 1;
+      client.query(`INSERT INTO questions(question_id, product_id, question_body, question_date_written, asker_name, asker_email, question_reported, question_helpful) VALUES(${newCount}, $1, $2, current_timestamp, $3, $4, false, 0)`, [product_id, body, name, email], (err, results) => {
+        if (err) {
+          cb(err, null);
+        } else {
+          cb(null, 'Added question');
+        }
+      })
+    }
+  })
+}
+
+const addAnswer = (qId, data, cb) => {
+  const { body, name, email } = data;
+  client.query('SELECT count(*) FROM answers', (err, count) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      let newCount = Number(count.rows[0].count) + 1;
+      client.query(`INSERT INTO answers(answer_id, questionId, answer_body, answer_date_written, answerer_name, answerer_email, answer_reported, answer_helpful) VALUES(${newCount}, $1, $2, current_timestamp, $3, $4, false, 0)`, [qId, body, name, email], (err, results) => {
+        if (err) {
+          cb(err, null);
+        } else {
+          cb(null, 'Added answer');
+        }
+      })
+    }
+  })
+}
+
 
 
 module.exports = {
   getQuestions,
   getAnswers,
+  markQuestionHelpful,
+  markAnswerHelpful,
+  reportAnswer,
   addQuestion,
-  updateQHelpfulness,
+  addAnswer,
 }
