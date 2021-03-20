@@ -5,36 +5,36 @@ CREATE DATABASE qa;
 \c qa
 
 CREATE TABLE IF NOT EXISTS questions (
-  id BIGSERIAL,
+  question_id BIGSERIAL,
   product_id INTEGER,
-  body VARCHAR(250),
-  date_written TIMESTAMP,
+  question_body VARCHAR(250),
+  question_date_written TIMESTAMP,
   asker_name VARCHAR(50),
   asker_email VARCHAR(75),
-  reported BOOLEAN,
-  helpful INTEGER,
-  PRIMARY KEY(id)
+  question_reported BOOLEAN,
+  question_helpful INTEGER,
+  PRIMARY KEY(question_id)
  );
 
  CREATE TABLE IF NOT EXISTS answers (
-  id BIGSERIAL,
-  question_id INTEGER,
-  body VARCHAR(250),
-  date_written TIMESTAMP,
+  answer_id BIGSERIAL,
+  questionId INTEGER,
+  answer_body VARCHAR(250),
+  answer_date_written TIMESTAMP,
   answerer_name VARCHAR(50),
   answerer_email VARCHAR(75),
-  reported BOOLEAN,
-  helpful INTEGER,
-  PRIMARY KEY(id),
-  FOREIGN KEY(question_id)
-    REFERENCES questions(id)
+  answer_reported BOOLEAN,
+  answer_helpful INTEGER,
+  PRIMARY KEY(answerid),
+  FOREIGN KEY(questionId)
+    REFERENCES questions(question_id)
  );
 
  CREATE TABLE IF NOT EXISTS photos (
-  id BIGSERIAL,
-  answer_id INTEGER,
+  photos_id BIGSERIAL,
+  answerId INTEGER,
   url VARCHAR(200),
   PRIMARY KEY(id),
-  FOREIGN KEY(answer_id)
-    REFERENCES answers(id)
+  FOREIGN KEY(answerId)
+    REFERENCES answers(answer_id)
  );
