@@ -10,100 +10,41 @@ app.use(cors());
 
 // get questions route
 // QA.js invoked line 19
-app.get('/questions/:id', (req, res) => {
-  queries.getQuestions(req.params.id, (err, questions) => {
+app.get('/questions', (req, res) => {
+  queries.getQuestions(req.query.product_id, req.query.page, req.query.count, (err, questions) => {
     if (err) {
       console.error(err);
       res.status(404).send(err);
     } else {
+      let filteredQs = questions.filter(question => question.question_reported === false)
       let formattedResponse = {
-        "product_id": req.params.id,
-        "results": []
+        "product_id": req.query.product_id,
+        "results": filteredQs
       };
-     let qArr = [];
-      questions.forEach((question, i) => {
-        if (!qArr.includes(question.question_id)) {
-          qArr.push(question.question_id);
-          // create obj for each question
-          if (question.question_reported !== true) {
-            let qObj = {
-              "question_id": question.question_id,
-              "question_body": question.question_body,
-              "question_date": question.question_date_written,
-              "asker_name": question.asker_name,
-              "question_helpfulness": question.question_helpful,
-              "reported": question.question_reported
-            };
-            if (question.answer_reported !== true && question.answer_reported !== null) {
-              qObj.answers = {};
-              qObj.answers[question.answer_id] = {
-                "id": question.answer_id,
-                "body": question.answer_body,
-                "answerer_name": question.answerer_name,
-                "helpfulness": question.answer_helpful
-              };
-            }
-            if (question.url !== null) {
-              qObj.answers[question.answer_id].photos = [question.url]
-            }
-            formattedResponse.results.push(qObj);
-          }
-        // otherwise question exists in formatted response & we just want to add answer to correct q obj
-        } else {
-          // iterate through formattedResponse results arr
-          for (let i = 0; i < formattedResponse.results.length; i++) {
-            // check if question is already in arr
-            if (formattedResponse.results[i].question_id === question.question_id && question.answer_reported !== true) {
-              let answerObj = {
-                "id": question.answer_id,
-                "body": question.answer_body,
-                "answerer_name": question.answerer_name,
-                "helpfulness": question.answer_helpful
-              }
-              if (question.url !== null) {
-                answerObj.photos = [question.url];
-              }
-              formattedResponse.results[i].answers[question.answer_id] = answerObj;
-            }
-          }
-        }
-      });
       res.status(200).send(formattedResponse);
     }
   })
 });
 
+
+
 // Question.js invoked line 16
-app.get('/answers/:id', (req, res) => {
-  queries.getAnswers(req.params.id, (err, answers) => {
+// aggregate version
+app.get('/answers', (req, res) => {
+  queries.getAnswers(req.query.question_id, req.query.page, req.query.count, (err, answers) => {
     if (err) {
       console.error(err);
       res.status(404).send(err);
     } else {
-      let answerResponse = {
-        "question": req.params.id,
-        "page": 0,
-        "count": answers.length,
-        "results": []
-      };
-      answers.forEach((ans, i) => {
-        if (ans.answer_reported !== true) {
-          let ansObj = {
-            "answer_id": ans.answer_id,
-            "body": ans.answer_body,
-            "date": ans.answer_date_written,
-            "answerer_name": ans.answerer_name,
-            "helpfulness": ans.answer_helpful,
-          }
-          if (ans.url !== null) {
-            ansObj.photos = [ans.url];
-          }
-          answerResponse.results.push(ansObj);
-        }
-      })
-      res.status(200).send(answerResponse);
+      let filtered = answers.filter(answer => answer.answer_reported === false);
+      let result = {
+        page: req.query.page,
+        count: req.query.count,
+        results: filtered
+      }
+      res.status(200).send(result);
     }
-  })
+  });
 });
 
 // mark question as helpful
