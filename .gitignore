@@ -3,6 +3,7 @@ node_modules/
 .env
 coverage
 build/
+.data
 ## csv files
 answers_photos.csv
 answers.csv
