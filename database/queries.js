@@ -1,8 +1,8 @@
 const {Client} = require('pg')
 
 const client = new Client ({
-  user: 'emma',
-  host: 'localhost',
+  user: 'postgres',
+  host: 'ec2-3-129-171-45.us-east-2.compute.amazonaws.com',
   database: 'qa',
   password: 'password',
   port: 5432,
@@ -204,7 +204,7 @@ const addAnswer = (qId, data, cb) => {
   })
 }
 
-// SELECT pg_catalog.setval(pg_get_serial_sequence('table_name', 'id'), (SELECT MAX(id) FROM table_name)+1);
+// SELECT pg_catalog.setval(pg_get_serial_sequence('questions', 'question_id'), (SELECT MAX(question_id) FROM questions)+1);
 
 module.exports = {
   getQuestions,

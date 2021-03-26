@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS questions (
   asker_name VARCHAR(50),
   asker_email VARCHAR(75),
   question_reported BOOLEAN,
-  question_helpful INTEGER,
+  question_helpfulness INTEGER,
   PRIMARY KEY(question_id)
  );
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS questions (
   photos_id BIGSERIAL,
   answerId INTEGER,
   url VARCHAR(200),
-  PRIMARY KEY(id),
+  PRIMARY KEY(photos_id),
   FOREIGN KEY(answerId)
     REFERENCES answers(answer_id)
  );
@@ -70,3 +70,19 @@ CREATE TABLE IF NOT EXISTS answers_format AS
   GROUP BY answers.answer_id
   ORDER BY answers.answer_helpful DESC;
 
+-- questions:
+-- 1dWft84kQu2bsDBHSC5cbphi8gxY-HU4S
+
+-- answers:
+-- 1UECWRo5le5opP-VPcEBjenoSIR7Jewn3
+
+-- answers photos:
+-- 1PnPZXpECoXVUONELSiixaTX3DzwidXzW
+
+-- wget --no-check-certificate --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1PnPZXpECoXVUONELSiixaTX3DzwidXzW' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1PnPZXpECoXVUONELSiixaTX3DzwidXzW" -O answers_photos.csv && rm -rf /tmp/cookies.txt
+
+
+-- COPY photos
+-- FROM '/home/ubuntu/data/answers_photos.csv'
+-- DELIMITER ','
+-- CSV HEADER;
