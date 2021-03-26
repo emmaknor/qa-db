@@ -8,6 +8,11 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors());
 
+// get loader io
+app.get('/loaderio-58f9f00483ed49daaa2e22832b630be5', (req, res) => {
+  res.sendFile('/home/ubuntu/qa-db/server/loaderio-58f9f00483ed49daaa2e22832b630be5.txt');
+});
+
 // get questions route
 // QA.js invoked line 19
 app.get('/questions', (req, res) => {
